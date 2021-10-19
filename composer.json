@@ -1,0 +1,21 @@
+{
+    "name": "chella/amqp",
+    "description": "library",
+    "type": "library",
+    "require": {
+        "php-amqplib/php-amqplib": "^3.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "chella\\amqp\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Chella S",
+            "email": "2chellaa@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
