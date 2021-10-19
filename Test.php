@@ -12,8 +12,9 @@ class Test {
     }
 
     public function listen() {
-        $consumer = App::context('localhost', 'guest', 'guest', 5672);
-        $consumer->listen($this, 'start', 'test', 2);
+        $context = App::context('localhost', 'guest', 'guest', 5672);
+        // $context->listen($this, 'start', 'test', 2);
+        $context->publish('hello world', 'test', 'test_routing');
     }
 }
 

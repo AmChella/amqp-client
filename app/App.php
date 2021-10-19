@@ -3,9 +3,9 @@ namespace chella\amqp;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use chella\amqp\Exception\InvalidParams;
-use chella\amqp\Listener\Listen;
+use chella\amqp\Service\{Listener, Publisher};
 
-class Consumer {
+class App {
     private static $app;
     private static $objects;
         
@@ -24,7 +24,7 @@ class Consumer {
         String $vhost = "/"
     ): Object {
         if (!self::$app) {
-            $obj = new Consumer();
+            $obj = new App();
             $conn = [
                 'host' => $host, 'username' => $user, 'password' => $pwd, 
                 'vhost' => $vhost, 'port' => $port
@@ -89,7 +89,20 @@ class Consumer {
             'queue' => $queue,
             'maxIteration' => $maxItem
         ];
-        $listener = new Listen($arg);
+        $listener = new Listener($arg);
         $listener->watch();
+    }
+    
+    /**
+     * publish
+     *
+     * @param  mixed $msg
+     * @param  mixed $xchange
+     * @param  mixed $routingKey
+     * @return void
+     */
+    public function publish(String $msg, String $xchange, String $routingKey = null) {
+        $publisher = new Publisher($this->connect($this->params));
+        $publisher->publish($xchange, $routingKey, $msg);
     }
 }

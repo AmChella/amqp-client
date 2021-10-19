@@ -1,10 +1,10 @@
 <?php
-namespace chella\amqp\Listener;
+namespace chella\amqp\Service;
 
 use chella\amqp\Exception\InvalidParams;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
-class Listen {
+class Listener {
     private $conn;
     private $service;
     private $method;
@@ -59,9 +59,7 @@ class Listen {
      * @return void
      */
     public function consume(String $msg) {
-        echo ' [x] Received ', "\n";
         \call_user_func_array([$this->service, $this->method], [$msg]);
-        echo " [x] Done\n";
     }
     
     /**
