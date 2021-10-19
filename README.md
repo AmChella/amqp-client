@@ -15,14 +15,19 @@ composer require chella/amqp
 
 ### include autoload
 
+```
 require_once "./vendor/autoload.php";
+```
 
 ### import service
 
+```
 use chella\amqp\App;
+```
 
 ### create instance
 
+```
 1st arg is hostname
 2nd arg is username
 3rd arg is password
@@ -30,13 +35,16 @@ use chella\amqp\App;
 5th arg is vhost (optional)
 
 $context = App::context('localhost', 'guest', 'guest', 5672, '/');
+```
 
 ### publish message
 
+```
 1st arg is message
 2nd arg is exchange
 3rd arg is routing_key
 
 $context->publish('hello world', 'test', 'test_routing');
+```
 
 Happy coding
