@@ -5,6 +5,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Connection\AMQPSSLConnection;
 use chella\amqp\Exception\InvalidParams;
 use chella\amqp\Service\{Listener, Publisher};
+use \Exception;
 
 class App {
     private static $app;

@@ -9,7 +9,7 @@ class Test {
     }
 
     public function listen() {
-        $context = App::context('localhost', 'guest', 'guest', 5672, '/', 'ssl');
+        $context = App::context('localhost', 'guest', 'guest', 5672, '/', 'ssl3');
         // $context->listen($this, 'start', 'test', 2);
         $context->publish('hello world', 'test', 'test_routing');
     }
