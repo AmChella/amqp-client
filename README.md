@@ -31,8 +31,8 @@ use chella\amqp\App;
 1st arg is hostname
 2nd arg is username
 3rd arg is password
-4th arg is port (optional)
-5th arg is vhost (optional)
+4th arg is port
+5th arg is vhost
 
 $context = App::context('localhost', 'guest', 'guest', 5672, '/');
 ```
