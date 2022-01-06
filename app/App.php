@@ -2,12 +2,14 @@
 namespace chella\amqp;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Connection\AMQPSSLConnection;
 use chella\amqp\Exception\InvalidParams;
 use chella\amqp\Service\{Listener, Publisher};
 
 class App {
     private static $app;
-    private static $objects;
+    private static $connectionMode;
+    private static $allowedConnMode = ['stream', 'ssl'];
         
     /**
      * context
@@ -20,9 +22,14 @@ class App {
      * @return Array
      */
     public static function context(
-        String $host, String $user, String $pwd, Int $port = 5672, 
-        String $vhost = "/"
+        String $host, String $user, String $pwd, Int $port, 
+        String $vhost, String $connectionMode = 'stream'
     ): Object {
+        if (in_array($connectionMode, self::$allowedConnMode) === false) {
+            throw new Exception("invalid.connection.mode.given");
+        }
+
+        self::$connectionMode = $connectionMode;
         if (!self::$app) {
             $obj = new App();
             $conn = [
@@ -63,11 +70,39 @@ class App {
      * @param  mixed $conn
      * @return Object
      */
-    public function connect(Array $conn): Object {
+    public function connectWithStream(Array $conn): Object {
         return new AMQPStreamConnection(
             $conn['host'], $conn['port'], $conn['username'], $conn['password'],
             $conn['vhost']
         );
+    }
+
+    
+    /**
+     * connectWithSsl
+     *
+     * @param  mixed $conn
+     * @return Object
+     */
+    public function connectWithSsl(Array $conn): Object {
+        return new AMQPSSLConnection(
+            $conn['host'], $conn['port'], $conn['username'], $conn['password'],
+            $conn['vhost'], ['verify_peer_name' => false], [], 'ssl'
+        );
+    }
+    
+    /**
+     * getConnection
+     *
+     * @param  mixed $params
+     * @return Object
+     */
+    public function getConnection(Array $params): Object {
+        if (strtolower(self::$connectionMode) === 'ssl') {
+            return $this->connectWithSsl($params);
+        }
+
+        return $this->connectWithStream($params);
     }
     
     /**
@@ -82,8 +117,9 @@ class App {
     public function listen(
         Object $service, String $method, String $queue, $maxItem = 10
     ) {
+        $connection = $this->getConnection($connectionMode);
         $arg = [
-            'connection' => $this->connect($this->params),
+            'connection' => $connection,
             'service' => $service,
             'method' => $method,
             'queue' => $queue,
@@ -102,7 +138,7 @@ class App {
      * @return void
      */
     public function publish(String $msg, String $xchange, String $routingKey = null) {
-        $publisher = new Publisher($this->connect($this->params));
+        $publisher = new Publisher($this->getConnection($this->params));
         $publisher->publish($xchange, $routingKey, $msg);
     }
 }
