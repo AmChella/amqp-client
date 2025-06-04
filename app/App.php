@@ -118,7 +118,7 @@ class App {
     public function listen(
         Object $service, String $method, String $queue, $maxItem = 10
     ) {
-        $connection = $this->getConnection($connectionMode);
+        $connection = $this->getConnection($this->params);
         $arg = [
             'connection' => $connection,
             'service' => $service,
